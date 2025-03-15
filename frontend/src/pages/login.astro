@@ -1,8 +1,97 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-	<Welcome />
+	<div class="container">
+		<h1>Login</h1>
+		<form action="/login" method="post" id="login">
+			<label>
+				Username: <input type="text" name="username" id="username" placeholder="Type username">
+			</label>
+			<label>
+				Password: <input type="text" name="password" id="password" placeholder="Type password">
+			</label>
+			<button type="submit">Login</button>
+		</form>
+	</div>
 </Layout>
+
+<style>
+	.container{
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		width: 100%;
+		background-color: black;
+		justify-content: center;
+		text-align: center;
+	}
+	.container > h1{
+		color: white;
+	}
+	#login{
+		padding: 1em 0;
+		display: flex;
+		flex-direction: column;
+		width: 25em;
+		margin: 0 auto;
+		gap: 1em;
+		background-color: rgb(60, 60, 60);
+		color: white;
+	}
+	#login > label{
+		font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ;
+        font-size: 1.3em;
+        color: azure;
+	}
+	#login > label > input{
+		background-color: black;
+        border: none;
+        border: .15em solid black;
+        margin-left: 1em;
+        color: white;
+        padding-left: 1em;
+	}
+	#login > button{
+        padding: .5em;
+        border: none;
+        width: 10em;
+        margin: 1em auto;
+        color: aliceblue;
+        background-color: black;
+    }
+</style>
+
+<script>
+	const form = document.querySelector("#login") as HTMLFormElement
+	form.addEventListener("submit", async(e)=>{
+		e.preventDefault()
+		
+		// pass the data
+        const formdata = new FormData(e.target as HTMLFormElement)
+        const formObj = Object.fromEntries(formdata.entries())
+
+		const res = await fetch(`http://localhost:3000/login`,{
+			method: "POST",
+			credentials: "include",
+			headers:{
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(formObj)
+		})
+		
+		// check the response
+		if(!res.ok){
+			window.location.href = "/login"
+			return
+		}
+
+		window.location.href = "/profile"
+		return
+	})
+</script>
+
+
+
+
