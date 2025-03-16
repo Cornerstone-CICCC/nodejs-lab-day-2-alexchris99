@@ -29,7 +29,7 @@ app.use(cors({
 //cookies
 app.use(cookieSession({
     name: "session",
-    maxAge: 8 * 60 * 1000,
+    maxAge: 60 * 60 * 1000,
     keys:[
         cookie_S,
         cookie_EN

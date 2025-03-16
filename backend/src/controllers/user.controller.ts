@@ -5,7 +5,12 @@ import { User } from "../types/user"; // user type
 
 // get user by username
 const getUserByUsername = (req: Request<{},{},{username:string}>, res: Response)=>{
-    const {username} = req.body// destrcuture the body to get the username
+    if(req.session && !req.session.username){
+        res.status(404).json({message: "Login First"})
+        return
+    }
+
+    const username = req.session?.username// destrcuture the body to get the username
 
     const user = userModel.findUser(username)// use the function to loook for the username
 
@@ -19,14 +24,14 @@ const getUserByUsername = (req: Request<{},{},{username:string}>, res: Response)
     res.status(200).json(user)
 }
 
-// add user
+// add user singIn
 const addUser = async(req: Request<{},{},Omit<User,"id">>, res: Response) =>{
     // desctruture the params from the body
     const {username, password, firstname, lastname} = req.body
 
     // verify the params
     if(!username || !password || !firstname|| !lastname){
-        res.status(409).json({message: "All fields are required"})
+        res.status(500).json({message: "All fields are required"})
         return
     }
     const user = await userModel.createUser({username,password,firstname,lastname}) // user the usermodel to try to cretate a new user
@@ -41,10 +46,21 @@ const addUser = async(req: Request<{},{},Omit<User,"id">>, res: Response) =>{
     res.status(201).json(user)
 }
 
+//singin get 
+const singInUser = (req: Request, res:Response )=>{
+    res.status(200).json({mesage: true})
+}
+
+//logIn get
+const logInUser = (req:Request, res:Response)=>{
+    res.status(200).json({message: true})
+}
+
 // login a user
 const loginUser = (req: Request<{},{},{username: string, password: string}>, res: Response)=>{
     // get the values by destructuring the request body
     const {username, password}=req.body
+
 
     // chech that the values exist
     if(!password || !username){
@@ -75,9 +91,13 @@ const logoutUser =(req: Request, res:Response)=>{
     res.status(200).json({message: "Logout Succesfully"})
 }
 
+
+
 export default{
     getUserByUsername,
     loginUser,
     logoutUser,
-    addUser
+    addUser,
+    singInUser,
+    logInUser,
 }

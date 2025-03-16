@@ -15,7 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = __importDefault(require("../models/user.model")); //model for the users
 // get user by username
 const getUserByUsername = (req, res) => {
-    const { username } = req.body; // destrcuture the body to get the username
+    var _a;
+    if (req.session && !req.session.username) {
+        res.status(404).json({ message: "Login First" });
+        return;
+    }
+    const username = (_a = req.session) === null || _a === void 0 ? void 0 : _a.username; // destrcuture the body to get the username
     const user = user_model_1.default.findUser(username); // use the function to loook for the username
     // if there is not user
     if (!user) {
@@ -25,13 +30,13 @@ const getUserByUsername = (req, res) => {
     // send the user information in case it exist
     res.status(200).json(user);
 };
-// add user
+// add user singIn
 const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // desctruture the params from the body
     const { username, password, firstname, lastname } = req.body;
     // verify the params
     if (!username || !password || !firstname || !lastname) {
-        res.status(409).json({ message: "All fields are required" });
+        res.status(500).json({ message: "All fields are required" });
         return;
     }
     const user = yield user_model_1.default.createUser({ username, password, firstname, lastname }); // user the usermodel to try to cretate a new user
@@ -43,6 +48,14 @@ const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // in case the user creation was succesfull
     res.status(201).json(user);
 });
+//singin get 
+const singInUser = (req, res) => {
+    res.status(200).json({ mesage: true });
+};
+//logIn get
+const logInUser = (req, res) => {
+    res.status(200).json({ message: true });
+};
 // login a user
 const loginUser = (req, res) => {
     // get the values by destructuring the request body
@@ -73,5 +86,7 @@ exports.default = {
     getUserByUsername,
     loginUser,
     logoutUser,
-    addUser
+    addUser,
+    singInUser,
+    logInUser,
 };

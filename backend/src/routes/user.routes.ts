@@ -1,13 +1,20 @@
 import { Router } from "express"; // router
 import userController from "../controllers/user.controller"; // user controler for the responses
+import { checkAuth } from "../middleware/auth";
 
 // create the Router
 const userRouter = Router()
 
-//singUp- create a new user
-userRouter.post("/singup", userController.addUser)
+//singup get
+userRouter.get("/register",checkAuth, userController.singInUser)
 
-//login
+//singUp- create a new user
+userRouter.post("/register", userController.addUser)
+
+//login Get
+userRouter.get("/login",checkAuth,userController.logInUser)
+
+//login post 
 userRouter.post("/login", userController.loginUser)
 
 //logout

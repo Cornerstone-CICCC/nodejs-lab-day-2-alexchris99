@@ -29,7 +29,7 @@ app.use((0, cors_1.default)({
 //cookies
 app.use((0, cookie_session_1.default)({
     name: "session",
-    maxAge: 8 * 60 * 1000,
+    maxAge: 60 * 60 * 1000,
     keys: [
         cookie_S,
         cookie_EN
