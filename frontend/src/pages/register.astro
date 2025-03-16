@@ -1,8 +1,102 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-	<Welcome />
+	<div class="container">
+        <h1>Create a new account</h1>
+        <form action="/register" method="post" id="register">
+            <label>
+                Username: <input type="text" name="username" id="username" placeholder="Type username">
+            </label>
+            <label>
+                Password: <input type="password" name="password" id="password" placeholder="Type password">
+            </label>
+            <label>
+                Firstname: <input type="text" name="firstname" id="firstname"
+                placeholder="Type firstname">
+            </label>
+            <label>
+                Lastname: <input type="text" name="lastname" id="lastname" placeholder="Type lastname">
+            </label>
+            <button type="submit">Create account</button>
+        </form>
+    </div>
 </Layout>
+
+<style>
+    .container{
+        height: 100vh;
+        background-color: black;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+    }
+    .container > h1{
+        color: white;
+    }
+    #register{
+        background-color:rgb(60, 60, 60);
+        width: 50%;
+        margin: 1em auto;        
+        border: 1px solid white;
+        display: flex;
+        flex-direction: column;
+        padding: .5em 0;
+        gap: 1em;
+    }
+    #register > label{
+        font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ;
+        font-size: 1.3em;
+        color: azure;
+    }
+    #register > label > input{
+        background-color: black;
+        border: none;
+        border: .15em solid black;
+        margin-left: 1em;
+        color: white;
+        padding-left: 1em;
+    }
+    #register > button{
+        padding: .5em;
+        border: none;
+        width: 10em;
+        margin: 1em auto;
+        color: aliceblue;
+        background-color: black;
+    }
+</style>
+
+<script>
+    const form = document.querySelector("#register") as HTMLFormElement
+    form.addEventListener("submit",async(e)=>{
+        e.preventDefault()
+
+        // pass the data
+        const formdata = new FormData(e.target as HTMLFormElement)
+        const formObj = Object.fromEntries(formdata.entries())
+
+        const res = await fetch(`http://localhost:3000/register`,{
+            method: "POST",
+            credentials: "include",
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formObj)
+        })
+
+        if(res.status === 503){
+            window.location.href = "/profile"
+        }
+
+        //check the response
+        if(!res.ok){
+            window.location.href = "/register"
+            return
+        }
+        window.location.href = "/login"
+        return
+    })
+</script>

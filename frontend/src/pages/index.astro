@@ -1,0 +1,94 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+	<div class="container">
+		<h1>Index</h1>
+			<div class="options">
+				<button id="login">
+					Login
+				</button>
+				<button id="register">
+					Register
+				</button>
+				<button id="profile">
+					Profile
+				</button>
+		</div>
+	</div>
+</Layout>
+
+<script>
+
+	const login = document.querySelector("#login") as HTMLButtonElement
+	const register = document.querySelector("#register") as HTMLButtonElement
+	const profile = document.querySelector("#profile") as HTMLButtonElement
+	login.addEventListener("click", async()=>{
+		const res = await fetch(`http://localhost:3000/login`,{
+			method: "GET",
+			credentials: "include"
+		})
+
+		if(!res.ok){
+			window.location.href = "/profile"
+			return
+		}
+
+		window.location.href = "/login"
+	})
+
+	register.addEventListener("click", async()=>{
+		const res = await fetch(`http://localhost:3000/register`,{
+			method: "GET",
+			credentials: "include"
+		})
+
+		if(!res.ok){
+			window.location.href = "/profile"
+			return
+		}
+
+		window.location.href = "/register"
+	})
+
+	profile.addEventListener("click", async()=>{
+		const res = await fetch(`http://localhost:3000/check-auth`,{
+			method: "GET",
+			credentials: "include"
+		})
+
+		if(!res.ok){
+			window.location.href = "/"
+			return
+		}
+
+		window.location.href = "/profile"
+	})
+</script>
+
+<style>
+	.container{
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		width: 100%;
+		background-color: black;
+		text-align: center;
+		justify-content: center;
+	}
+	.container > h1{
+		color: white;
+	}
+	.options > button{
+		border: none;
+		padding: .5em;
+        width: 10em;
+        margin: 1em auto;
+        color: aliceblue;
+        background-color: rgb(37, 36, 36);
+	}
+	.options > button:hover{
+		cursor: pointer;
+	}
+</style>

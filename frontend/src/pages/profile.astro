@@ -1,8 +1,87 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-	<Welcome />
+	<div class="container">
+        <h1 class="name"></h1>
+        <p class="username"></p>
+        <form action="/logout" method="get" id="logout">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
 </Layout>
+
+<style>
+    .container{
+        width: 100%;
+        height: 100vh;
+        background-color: black;
+        display: flex;
+        flex-direction: column;
+        justify-content:center ;
+        text-align: center;
+    }
+    .container >h1{
+        color: white;
+    }
+    .container > p{
+        font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ;
+        font-size: 1.3em;
+        color: azure;
+    }
+    .username{
+        color: white;
+    }
+    #logout > button{
+        padding: .5em;
+        border: none;
+        width: 10em;
+        margin: 1em auto;
+        color: aliceblue;
+        background-color: rgb(37, 36, 36);
+    }
+</style>
+
+<script>
+
+
+    const getCookie = async () =>{
+        const res = await fetch(`http://localhost:3000/check-auth`,{
+            method: "GET",
+            credentials: "include"
+        })
+        
+        if(!res.ok){
+            console.error("Something went wrong")
+            return
+        }
+
+        const data = await res.json()
+        const name = document.querySelector(".name") as HTMLHeadElement
+        name.textContent = data.firstname + " " + data.lastname
+        const username = document.querySelector(".username") as HTMLParagraphElement
+        username.textContent = `Username: ${data.username}`
+        return data
+    }
+
+    getCookie()
+
+
+    const form = document.querySelector("#logout") as HTMLFormElement
+    form.addEventListener("submit", async(e) =>{
+        e.preventDefault()
+        const res = await fetch(`http://localhost:3000/logout`,{
+            method: "GET",
+            credentials: "include"
+        })
+
+        if(!res.ok){
+            console.error("Something went wrong")
+            return
+        }
+
+        window.location.href = "/login"
+    })
+</script>
+
